@@ -1,0 +1,18 @@
+{
+  "name": "paper-md-project",
+  "version": "1.0.0",
+  "description": "Camera to markdown using Paddleocr v5",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "esearch-ocr": "^8.5.0",
+    "onnxruntime-web": "^1.17.3"
+  },
+  "devDependencies": {
+    "vite": "^4.0.0"
+  },
+  "type": "module"
+}
