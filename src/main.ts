@@ -1,5 +1,6 @@
 import * as ocr from "esearch-ocr";
 import * as ort from "onnxruntime-web";
+import { fetchDictionary } from "./utils";
 
 async function main(): Promise<void> {
   const video = document.getElementById("camera") as HTMLVideoElement;
@@ -12,9 +13,14 @@ async function main(): Promise<void> {
   let capturedImageData: ImageData | null = null;
   let ocrInstance: any = null;
 
+  captureBtn.disabled = true;
+  inferBtn.disabled = true;
+  resultDiv.textContent = "Loading OCR model...";
+
+  // camera initialization
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "user" },
+      video: { facingMode: "environment" },
     });
     video.srcObject = stream;
     await video.play();
@@ -26,23 +32,12 @@ async function main(): Promise<void> {
     return;
   }
 
-  captureBtn.disabled = true;
-  inferBtn.disabled = true;
-  resultDiv.textContent = "Loading OCR model...";
-
-  async function fetchTextFile(url: string): Promise<string> {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
-    }
-    return response.text();
-  }
-
   try {
     ort.env.wasm.wasmPaths =
-      "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.3/dist/";
+      "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.3/dist/"; // for some reason this runtime works, but newer dont work
 
-    const dictContent = await fetchTextFile("/models/dict.txt");
+    const dictContent = await fetchDictionary("/models/dict.txt");
+
     ocrInstance = await ocr.init({
       det: { input: "/models/det.onnx" },
       rec: {
@@ -88,6 +83,8 @@ async function main(): Promise<void> {
       return;
     }
     resultDiv.textContent = "Running OCR...";
+    await new Promise((resolve) => setTimeout(resolve, 0)); // wait for browser repaint
+
     try {
       const result = await ocrInstance.ocr(capturedImageData);
 
