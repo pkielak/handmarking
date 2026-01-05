@@ -9,6 +9,9 @@ async function main(): Promise<void> {
   const captureBtn = document.getElementById("capture") as HTMLButtonElement;
   const inferBtn = document.getElementById("infer") as HTMLButtonElement;
   const resultDiv = document.getElementById("result") as HTMLDivElement;
+  const playbackInfo = document.getElementById(
+    "playback-info",
+  ) as HTMLParagraphElement;
 
   let capturedImageData: ImageData | null = null;
   let ocrInstance: any = null;
@@ -25,10 +28,11 @@ async function main(): Promise<void> {
     video.srcObject = stream;
     await video.play();
   } catch (err) {
-    console.error("Error accessing camera:", err);
-    resultDiv.textContent =
-      "Error accessing camera: " +
-      (err instanceof Error ? err.message : String(err));
+    const permissionsError =
+      "Error accessing camera, please check camera permissions.";
+    playbackInfo.classList.add("show");
+    playbackInfo.textContent = permissionsError;
+    resultDiv.textContent = permissionsError;
     return;
   }
 

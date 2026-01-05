@@ -8,19 +8,22 @@
     </head>
     <body>
         <main>
-            <video
-                id="camera"
-                class="camera"
-                width="480"
-                height="640"
-                autoplay
-                muted
-                playsinline
-            ></video>
+            <div class="camera-wrapper">
+                <video
+                    id="camera"
+                    class="camera"
+                    width="480"
+                    height="640"
+                    autoplay
+                    muted
+                    playsinline
+                ></video>
+                <button id="capture" class="capture"></button>
+                <p id="playback-info" class="playback-info"></p>
+            </div>
             <canvas id="canvas" style="display: none"></canvas>
             <div class="controls">
-                <button id="capture">📸 Capture</button>
-                <button id="infer" disabled>🤖 Infer</button>
+                <button id="infer" class="infer" disabled>🤖 Analyse</button>
                 <div id="result" class="result"></div>
             </div>
         </main>
