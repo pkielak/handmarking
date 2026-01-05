@@ -7,21 +7,23 @@
         <link href="styles.css" rel="stylesheet" />
     </head>
     <body>
-        <video
-            id="camera"
-            width="320"
-            height="240"
-            autoplay
-            muted
-            playsinline
-        ></video>
-        <canvas id="canvas" style="display: none"></canvas>
-        <br />
-        <button id="capture">📸 Capture</button>
-        <button id="infer" disabled>🤖 Infer</button>
-        <br />
-        <div id="result"></div>
-
+        <main>
+            <video
+                id="camera"
+                class="camera"
+                width="480"
+                height="640"
+                autoplay
+                muted
+                playsinline
+            ></video>
+            <canvas id="canvas" style="display: none"></canvas>
+            <div class="controls">
+                <button id="capture">📸 Capture</button>
+                <button id="infer" disabled>🤖 Infer</button>
+                <div id="result" class="result"></div>
+            </div>
+        </main>
         <script type="module" src="/src/main.ts"></script>
     </body>
 </html>
