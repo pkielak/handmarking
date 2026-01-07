@@ -1,6 +1,8 @@
+/// <reference types="vite/client" />
+
 declare module "esearch-ocr" {
   export interface InitOptions {
-    ort: any; // typeof import("onnxruntime-web")
+    ort: typeof import("onnxruntime-web");
     det: {
       input: string | ArrayBufferLike | Uint8Array;
       ratio?: number;
@@ -45,10 +47,20 @@ declare module "esearch-ocr" {
   }[];
   type BoxType = number[][]; // Coordinates: [[x1,y1],[x2,y2],...]
 
-  export function init(options: InitOptions): Promise<any>; // Returns OCR instance
-  // Functions on instance: ocr(image: string | HTMLImageElement | ...): Promise<OcrResult>
-  // det(image): Promise<any>, rec(...)
+  export function init(options: InitOptions): any;
 
-  const defaultExport: any; // Await init first
+  interface OcrInstance {
+    ocr(
+      image: ImageData | HTMLImageElement | HTMLCanvasElement | string,
+    ): Promise<OcrResult>;
+    det(
+      image: ImageData | HTMLImageElement | HTMLCanvasElement | string,
+    ): Promise<any>;
+    rec(
+      image: ImageData | HTMLImageElement | HTMLCanvasElement | string,
+    ): Promise<any>;
+  }
+
+  const defaultExport: OcrInstance;
   export default defaultExport;
 }

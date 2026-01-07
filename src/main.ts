@@ -1,6 +1,6 @@
 import * as ocr from "esearch-ocr";
 import * as ort from "onnxruntime-web";
-import { fetchDictionary } from "./utils";
+import { cacheModel } from "./utils";
 
 async function main(): Promise<void> {
   const video = document.getElementById("camera") as HTMLVideoElement;
@@ -14,7 +14,7 @@ async function main(): Promise<void> {
   ) as HTMLParagraphElement;
 
   let capturedImageData: ImageData | null = null;
-  let ocrInstance: any = null;
+  let ocrInstance: any | null = null;
 
   captureBtn.disabled = true;
   inferBtn.disabled = true;
@@ -37,22 +37,30 @@ async function main(): Promise<void> {
   }
 
   try {
-    ort.env.wasm.wasmPaths =
-      "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.3/dist/"; // for some reason this runtime works, but newer dont work
+    ort.env.wasm.wasmPaths = "https://unpkg.com/onnxruntime-web@dev/dist/";
 
-    const dictContent = await fetchDictionary("/models/dict.txt");
+    // Get environment variables with fallback to default URLs
+    const dictUrl = import.meta.env.VITE_DICT_URL;
+    const recUrl = import.meta.env.VITE_REC_URL;
+    const detUrl = import.meta.env.VITE_DET_URL;
 
-    ocrInstance = await ocr.init({
-      det: { input: "/models/det.onnx" },
-      rec: {
-        input: "/models/rec.onnx",
-        decodeDic: dictContent,
-        optimize: {
-          space: false,
+    const dictContent = await (await cacheModel(dictUrl, "dict"))?.text();
+    const rec = await (await cacheModel(recUrl, "rec"))?.arrayBuffer();
+    const det = await (await cacheModel(detUrl, "det"))?.arrayBuffer();
+
+    if (dictContent && rec && det) {
+      ocrInstance = await ocr.init({
+        det: { input: det },
+        rec: {
+          input: rec,
+          decodeDic: dictContent,
+          optimize: {
+            space: false,
+          },
         },
-      },
-      ort,
-    });
+        ort,
+      });
+    }
   } catch (err) {
     console.error("Error loading OCR model:", err);
     resultDiv.textContent =
