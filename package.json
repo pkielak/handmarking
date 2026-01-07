@@ -1,7 +1,7 @@
 {
-  "name": "paper-md-project",
-  "version": "1.0.0",
-  "description": "Camera to markdown using Paddleocr v5",
+  "name": "inktomd",
+  "version": "0.0.1",
+  "description": "Handwriting to markdown converter",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
