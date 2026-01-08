@@ -124,6 +124,7 @@ async function main(): Promise<void> {
         resultText.textContent = result.parragraphs
           .map((line: any) => line.text)
           .join("\n");
+        resultText.disabled = false;
       } else {
         resultText.textContent = "No text detected.";
       }

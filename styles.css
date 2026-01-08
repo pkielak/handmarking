@@ -46,7 +46,7 @@ footer {
     width: calc(100% - 2rem);
     height: 56px;
     padding: 0 1rem;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.25);
 }
 
 nav {
