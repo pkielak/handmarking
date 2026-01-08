@@ -23,22 +23,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm" # Or 'yarn', 'pnpm'
+          cache: "npm"
 
       - name: Install dependencies
-        run: npm ci # Adapt: yarn install, pnpm install, etc.
+        run: npm install
 
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
 
       - name: Build with Node.js
-        run: npm run build # Replace with your build command (e.g., hugo, jekyll build)
+        env:
+          VITE_DET_URL: ${{ secrets.VITE_DET_URL }}
+          VITE_REC_URL: ${{ secrets.VITE_REC_URL }}
+          VITE_DICT_URL: ${{ secrets.VITE_DICT_URL }}
+        run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: "./dist" # Adjust to your output directory (e.g., '_site', 'public', 'build')
+          path: "./dist"
 
   deploy:
     environment:
