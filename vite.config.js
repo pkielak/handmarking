@@ -8,6 +8,7 @@ export default defineConfig({
     loader: "ts",
     include: /\.ts?$/,
   },
+  base: "/",
   build: {
     rollupOptions: {
       input: "index.html",
