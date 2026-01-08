@@ -8,7 +8,7 @@ async function main(): Promise<void> {
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
   const captureBtn = document.getElementById("capture") as HTMLButtonElement;
   const inferBtn = document.getElementById("infer") as HTMLButtonElement;
-  const resultDiv = document.getElementById("result") as HTMLDivElement;
+  const resultText = document.getElementById("result") as HTMLTextAreaElement;
   const playbackInfo = document.getElementById(
     "playback-info",
   ) as HTMLParagraphElement;
@@ -16,27 +16,33 @@ async function main(): Promise<void> {
   const imagePreview = document.getElementById(
     "image-preview",
   ) as HTMLImageElement;
+  const imagePreviewPlaceholder = document.getElementById(
+    "image-preview-placeholder",
+  ) as HTMLDivElement;
 
   let capturedImageData: ImageData | null = null;
   let ocrInstance: any | null = null;
 
   captureBtn.disabled = true;
   inferBtn.disabled = true;
-  resultDiv.textContent = "Loading OCR model...";
+  const originalPlaceholder = resultText.placeholder;
+  resultText.placeholder = "Loading OCR model...";
 
   // camera initialization
+  playbackInfo.classList.add("show");
+  playbackInfo.textContent = "Initializing camera...";
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: "environment" },
     });
     video.srcObject = stream;
     await video.play();
+    playbackInfo.classList.remove("show");
   } catch (err) {
     const permissionsError =
       "Error accessing camera, please check camera permissions.";
-    playbackInfo.classList.add("show");
     playbackInfo.textContent = permissionsError;
-    resultDiv.textContent = permissionsError;
+    resultText.placeholder = permissionsError;
     return;
   }
 
@@ -67,18 +73,18 @@ async function main(): Promise<void> {
     }
   } catch (err) {
     console.error("Error loading OCR model:", err);
-    resultDiv.textContent =
+    resultText.placeholder =
       "Error loading OCR model: " +
       (err instanceof Error ? err.message : String(err));
     return;
   }
 
-  resultDiv.textContent = "";
+  resultText.placeholder = originalPlaceholder;
   captureBtn.disabled = false;
 
   captureBtn.onclick = (): void => {
     if (video.videoWidth === 0 || video.videoHeight === 0) {
-      resultDiv.textContent = "Camera not ready yet, try again.";
+      resultText.textContent = "Camera not ready yet, try again.";
       return;
     }
     canvas.width = video.videoWidth;
@@ -86,39 +92,44 @@ async function main(): Promise<void> {
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     capturedImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     inferBtn.disabled = false;
-    resultDiv.textContent = "";
+    resultText.textContent = "";
 
     // Update preview images with captured frame
     const imageDataUrl = canvas.toDataURL("image/png");
     previewImg.src = imageDataUrl;
     imagePreview.src = imageDataUrl;
+
+    // Hide the placeholder when image is captured
+    if (imagePreviewPlaceholder) {
+      imagePreviewPlaceholder.style.display = "none";
+    }
   };
 
   inferBtn.onclick = async (): Promise<void> => {
     if (!capturedImageData) {
-      resultDiv.textContent = "Please capture an image first.";
+      resultText.textContent = "Please capture an image first.";
       return;
     }
     if (!ocrInstance) {
-      resultDiv.textContent = "OCR model not initialized.";
+      resultText.textContent = "OCR model not initialized.";
       return;
     }
-    resultDiv.textContent = "Running OCR...";
+    resultText.textContent = "Running OCR...";
     await new Promise((resolve) => setTimeout(resolve, 0)); // wait for browser repaint
 
     try {
       const result = await ocrInstance.ocr(capturedImageData);
 
       if (result?.parragraphs && result.parragraphs.length > 0) {
-        resultDiv.textContent = result.parragraphs
+        resultText.textContent = result.parragraphs
           .map((line: any) => line.text)
           .join("\n");
       } else {
-        resultDiv.textContent = "No text detected.";
+        resultText.textContent = "No text detected.";
       }
     } catch (e) {
       console.error("OCR error:", e);
-      resultDiv.textContent =
+      resultText.textContent =
         "OCR failed: " + (e instanceof Error ? e.message : String(e));
     }
   };
