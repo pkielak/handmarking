@@ -1,4 +1,4 @@
-# inktomd
+# Handmarking
 
 Handwriting to markdown converter
 

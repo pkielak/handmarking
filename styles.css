@@ -16,6 +16,13 @@ body {
     overflow: hidden;
 }
 
+.navbar-header {
+    font-family: "Pacifico", cursive;
+    font-size: 1.625rem;
+    margin: 0;
+    padding: 0;
+}
+
 main {
     display: flex;
     height: 100%;
