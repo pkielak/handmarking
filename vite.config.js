@@ -8,7 +8,7 @@ export default defineConfig({
     loader: "ts",
     include: /\.ts?$/,
   },
-  base: "/",
+  base: process.env.VITE_BASE_PATH || "/handmarking/",
   build: {
     rollupOptions: {
       input: "index.html",

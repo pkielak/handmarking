@@ -13,12 +13,7 @@
     },
     {
       "src": "icons/small.png",
-      "sizes": "96x96",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/medium.webp",
-      "sizes": "192x192",
+      "sizes": "256x256",
       "type": "image/webp"
     },
     {
