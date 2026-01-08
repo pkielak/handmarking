@@ -10,7 +10,7 @@
     </head>
     <body>
         <main>
-            <div class="camera-wrapper">
+            <section id="camera-wrapper" class="camera-wrapper">
                 <video
                     id="camera"
                     class="camera"
@@ -22,14 +22,51 @@
                 ></video>
                 <button id="capture" class="capture"></button>
                 <p id="playback-info" class="playback-info"></p>
-            </div>
+                <a href="#image-process">
+                    <img
+                        id="preview"
+                        class="preview"
+                        src="icons/tiny.webp"
+                        alt="Preview of captured image"
+                    />
+                </a>
+            </section>
             <canvas id="canvas" style="display: none"></canvas>
-            <div class="controls">
-                <button id="infer" class="infer" disabled>
-                    🤖 Process Image
-                </button>
-                <div id="result" class="result"></div>
-            </div>
+            <section id="image-process" class="image-process">
+                <nav>
+                    <header>
+                        <img
+                            src="icons/tiny.webp"
+                            alt="camera shape with MD letters inside"
+                        />
+                        <h1>inkto.md</h1>
+                    </header>
+                    <a class="back" href="#capture" aria-label="back">く</a>
+                </nav>
+
+                <img
+                    id="image-preview"
+                    class="image-preview"
+                    src="icons/large.png"
+                    alt="Preview of captured image"
+                />
+
+                <textarea
+                    id="result"
+                    class="result"
+                    rows="5"
+                    placeholder="Your text from handwritten note will appear here."
+                    disabled
+                ></textarea>
+                <footer>
+                    <button id="infer" class="infer" disabled>
+                        🤖 Process Image
+                    </button>
+                    <button id="save" class="save" disabled>
+                        💾 Save to MD
+                    </button>
+                </footer>
+            </section>
         </main>
         <script type="module" src="/src/main.ts"></script>
     </body>

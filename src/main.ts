@@ -12,6 +12,10 @@ async function main(): Promise<void> {
   const playbackInfo = document.getElementById(
     "playback-info",
   ) as HTMLParagraphElement;
+  const previewImg = document.getElementById("preview") as HTMLImageElement;
+  const imagePreview = document.getElementById(
+    "image-preview",
+  ) as HTMLImageElement;
 
   let capturedImageData: ImageData | null = null;
   let ocrInstance: any | null = null;
@@ -83,6 +87,11 @@ async function main(): Promise<void> {
     capturedImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     inferBtn.disabled = false;
     resultDiv.textContent = "";
+
+    // Update preview images with captured frame
+    const imageDataUrl = canvas.toDataURL("image/png");
+    previewImg.src = imageDataUrl;
+    imagePreview.src = imageDataUrl;
   };
 
   inferBtn.onclick = async (): Promise<void> => {
