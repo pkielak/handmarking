@@ -93,6 +93,7 @@ async function main(): Promise<void> {
     capturedImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     inferBtn.disabled = false;
     resultText.textContent = "";
+    resultText.disabled = true;
 
     // Update preview images with captured frame
     const imageDataUrl = canvas.toDataURL("image/png");
@@ -127,11 +128,13 @@ async function main(): Promise<void> {
         resultText.disabled = false;
       } else {
         resultText.textContent = "No text detected.";
+        resultText.disabled = false;
       }
     } catch (e) {
       console.error("OCR error:", e);
       resultText.textContent =
         "OCR failed: " + (e instanceof Error ? e.message : String(e));
+      resultText.disabled = false;
     }
   };
 }
