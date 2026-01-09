@@ -19,6 +19,7 @@ async function main(): Promise<void> {
   const imagePreviewPlaceholder = document.getElementById(
     "image-preview-placeholder",
   ) as HTMLDivElement;
+  const saveBtn = document.getElementById("save") as HTMLButtonElement; // Added save button reference
 
   let capturedImageData: ImageData | null = null;
   let ocrInstance: any | null = null;
@@ -94,6 +95,7 @@ async function main(): Promise<void> {
     inferBtn.disabled = false;
     resultText.textContent = "";
     resultText.disabled = true;
+    saveBtn.disabled = true;
 
     // Update preview images with captured frame
     const imageDataUrl = canvas.toDataURL("image/png");
@@ -126,6 +128,7 @@ async function main(): Promise<void> {
           .map((line: any) => line.text)
           .join("\n");
         resultText.disabled = false;
+        saveBtn.disabled = false;
       } else {
         resultText.textContent = "No text detected.";
         resultText.disabled = false;
@@ -135,6 +138,35 @@ async function main(): Promise<void> {
       resultText.textContent =
         "OCR failed: " + (e instanceof Error ? e.message : String(e));
       resultText.disabled = false;
+    }
+  };
+
+  saveBtn.onclick = async (): Promise<void> => {
+    try {
+      const text = resultText.textContent;
+      if (!text) {
+        resultText.textContent = "";
+        resultText.placeholder = "No content to save.";
+        return;
+      }
+      // Create a Blob with markdown MIME type
+      const blob = new Blob([text], { type: "text/markdown" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      // Generate filename with current date in ISO format
+      const filename = `handmarking_${new Date().toISOString().split("T")[0]}.md`;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 1000);
+    } catch (error) {
+      console.error("Save error:", error);
+      resultText.textContent = "";
+      resultText.placeholder = "Failed to save file.";
     }
   };
 }
