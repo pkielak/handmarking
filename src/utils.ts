@@ -4,13 +4,13 @@ async function loadFromIndexedDB(key: string): Promise<Blob | null> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(dbName, 1);
     request.onupgradeneeded = (e: Event) => {
-      const db = e.target?.result;
+      const db = (e.target as IDBOpenDBRequest)?.result;
       if (db) {
         db.createObjectStore(storeName);
       }
     };
     request.onsuccess = (e: Event) => {
-      const db = e.target?.result;
+      const db = (e.target as IDBOpenDBRequest)?.result;
       if (db) {
         const tx = db.transaction(storeName, "readonly");
         const store = tx.objectStore(storeName);
@@ -33,7 +33,7 @@ async function saveToIndexedDB(key: string, blob: Blob): Promise<IDBValidKey> {
     const request = indexedDB.open(dbName, 1);
     request.onerror = () => reject(request.error);
     request.onsuccess = (e: Event) => {
-      const db = e.target?.result;
+      const db = (e.target as IDBOpenDBRequest)?.result;
       if (db) {
         const tx = db.transaction(storeName, "readwrite");
         tx.onerror = () => reject(tx.error);
@@ -48,7 +48,7 @@ async function saveToIndexedDB(key: string, blob: Blob): Promise<IDBValidKey> {
       }
     };
     request.onupgradeneeded = (e: IDBVersionChangeEvent) => {
-      const db = e.target?.result;
+      const db = (e.target as IDBOpenDBRequest)?.result;
       if (db && !db.objectStoreNames.contains(storeName)) {
         db.createObjectStore(storeName);
       }

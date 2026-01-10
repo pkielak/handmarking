@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "types": ["vite/client"],
+    "target": "ES2015",
+  },
+  "include": ["src"],
+}
