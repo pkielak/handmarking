@@ -1,0 +1,299 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+html {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	color-scheme: light dark; /* Tells browser to use system colors for UI */
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: Arial, sans-serif;
+	overflow: hidden;
+}
+
+.navbar-header {
+	font-family: 'Pacifico', cursive;
+	font-size: 1.625rem;
+	margin: 0;
+	padding: 0;
+}
+
+main {
+	display: flex;
+	height: 100%;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scroll-snap-type: x mandatory;
+	-webkit-scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
+	-webkit-overflow-scrolling: touch;
+	touch-action: pan-x;
+	margin: 0;
+	padding: 0;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+main::-webkit-scrollbar {
+	display: none;
+}
+
+nav,
+footer {
+	display: flex;
+	align-items: center;
+	position: absolute;
+	z-index: 1;
+	right: 0;
+	width: 100%;
+	height: 56px;
+	padding: 0 1rem;
+	background: rgba(0, 0, 0, 0.25);
+}
+
+nav {
+	top: 0;
+	justify-content: space-between;
+}
+
+.back {
+	font-size: 1.25rem;
+	width: 30px;
+	height: 30px;
+	text-align: center;
+	text-decoration: none;
+	user-select: none;
+}
+
+footer {
+	bottom: 0;
+	justify-content: center;
+	gap: 1rem;
+}
+
+button {
+	padding: 0.5em;
+	font-size: 1em;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	background-color: #3498db;
+	color: #ffffff;
+	transition: background-color 0.3s ease;
+	width: 100%;
+	max-width: 200px;
+	letter-spacing: -1px;
+}
+
+button:disabled {
+	filter: opacity(50%);
+	cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+	filter: brightness(125%);
+}
+
+header {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	overflow: hidden;
+}
+
+header h1 {
+	font-weight: 400;
+	margin: 0;
+}
+
+header img {
+	display: none;
+	position: relative;
+	left: 0;
+	top: 2px;
+	width: 48px;
+	height: auto;
+}
+
+.image-process,
+.camera-wrapper {
+	scroll-snap-align: start;
+	flex-shrink: 0;
+}
+
+.camera-wrapper {
+	position: relative;
+	width: 100vw;
+	height: 100%;
+	background: black;
+}
+
+.camera {
+	width: 100%;
+	height: 100%;
+}
+
+.playback-info,
+.capture {
+	position: absolute;
+	left: 50%;
+	z-index: 1;
+	text-align: center;
+}
+
+.playback-info {
+	display: none;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.playback-info.show {
+	display: block;
+}
+
+.capture,
+.preview {
+	bottom: 2rem;
+	width: 3rem;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	padding: 0;
+	margin: 0;
+}
+
+.capture {
+	transform: translateX(-50%);
+	background: red;
+}
+
+.capture:disabled {
+	filter: opacity(50%);
+}
+
+.capture:hover:not(:disabled) {
+	filter: brightness(125%);
+}
+
+.preview {
+	position: absolute;
+	right: 2rem;
+	object-fit: cover;
+	border: 1px solid white;
+	z-index: 2;
+}
+
+.image-preview-wrapper {
+	position: relative;
+	width: calc(100% - 2rem);
+	max-width: 512px;
+	height: auto;
+	aspect-ratio: 1;
+	margin: 1rem;
+}
+
+.image-preview {
+	width: 100%;
+	height: 100%;
+	border-radius: 8px;
+	object-fit: cover;
+	border: 1px solid #eeeeee;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.image-preview-placeholder {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	font-size: 0.9em;
+	padding: 0.5rem;
+}
+
+.image-preview-placeholder img {
+	width: 100px;
+	height: auto;
+	aspect-ratio: 1;
+	object-fit: cover;
+	object-position: center;
+}
+
+.image-process {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	gap: 1rem;
+	padding: 56px 0 0;
+}
+
+@media (min-width: 1024px) {
+	main {
+		width: 100vw;
+		scroll-snap-type: none;
+	}
+
+	header img {
+		display: block;
+	}
+
+	.camera-wrapper,
+	.image-process {
+		width: 50%;
+		scroll-snap-align: none;
+		height: auto;
+	}
+
+	.preview,
+	.back {
+		display: none;
+	}
+}
+
+.result {
+	width: calc(100% - 3rem);
+	min-height: 3em;
+	white-space: pre-wrap;
+	font-family: Consolas, monospace;
+	font-size: 1.1em;
+	border-radius: 4px;
+	padding: 0.5rem;
+	margin: 0 1rem;
+	resize: vertical;
+	color: #000000;
+}
+
+@media (prefers-color-scheme: light) {
+	nav,
+	footer {
+		display: flex;
+		align-items: center;
+		position: absolute;
+		z-index: 1;
+		right: 0;
+		width: 100%;
+		height: 56px;
+		padding: 0 1rem;
+		background: rgba(0, 0, 0, 0.025);
+	}
+
+	header img,
+	.image-preview-placeholder img {
+		filter: invert(1);
+	}
+}
