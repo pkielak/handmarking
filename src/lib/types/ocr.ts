@@ -1,24 +1,17 @@
 // Type definitions for OCR functionality
 // This file complements the types defined in app.d.ts for esearch-ocr
 
-import type { OcrResult, resultType } from 'esearch-ocr';
+import type { OcrResult, resultType, BoxType } from 'esearch-ocr';
 
 // ImageData type from HTML Canvas API
 export type CanvasImageData = ImageData;
 
-// Detection result type (more specific than unknown)
-export type DetectionResult = number[][]; // Box coordinates [[x1,y1],[x2,y2],...]
+// Re-export types from esearch-ocr to avoid duplication
+// Detection result type (same as BoxType from esearch-ocr)
+export type DetectionResult = BoxType;
 
-// Recognition result type (more specific than unknown)
-export type RecognitionResult = Array<{
-	text: string;
-	mean: number;
-	box: number[][];
-	style: {
-		bg: number[];
-		text: number[];
-	};
-}>;
+// Recognition result type (same as resultType[] from esearch-ocr)
+export type RecognitionResult = resultType[];
 
 // OCR Instance type - using the exported interface from esearch-ocr
 export type { OcrInstance } from 'esearch-ocr';

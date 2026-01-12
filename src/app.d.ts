@@ -41,7 +41,7 @@ declare module 'esearch-ocr' {
 		box: number[][];
 		style: { bg: number[]; text: number[] };
 	};
-	type BoxType = number[][]; // Coordinates: [[x1,y1],[x2,y2],...]
+export type BoxType = number[][]; // Coordinates: [[x1,y1],[x2,y2],...]
 
 	export function init(options: InitOptions): Promise<OcrInstance>;
 
