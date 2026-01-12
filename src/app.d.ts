@@ -35,20 +35,27 @@ declare module 'esearch-ocr' {
 		angle: { reading: { inline: number; block: number }; angle: number };
 	}
 
-	type resultType = {
+	export type resultType = {
 		text: string;
 		mean: number;
 		box: number[][];
 		style: { bg: number[]; text: number[] };
-	}[];
+	};
 	type BoxType = number[][]; // Coordinates: [[x1,y1],[x2,y2],...]
 
-	export function init(options: InitOptions): any;
+	export function init(options: InitOptions): Promise<OcrInstance>;
 
-	interface OcrInstance {
+	export interface OcrInstance {
 		ocr(image: ImageData | HTMLImageElement | HTMLCanvasElement | string): Promise<OcrResult>;
-		det(image: ImageData | HTMLImageElement | HTMLCanvasElement | string): Promise<unknown>;
-		rec(image: ImageData | HTMLImageElement | HTMLCanvasElement | string): Promise<unknown>;
+		det(image: ImageData | HTMLImageElement | HTMLCanvasElement | string): Promise<number[][]>;
+		rec(image: ImageData | HTMLImageElement | HTMLCanvasElement | string): Promise<
+			Array<{
+				text: string;
+				mean: number;
+				box: number[][];
+				style: { bg: number[]; text: number[] };
+			}>
+		>;
 	}
 
 	const defaultExport: OcrInstance;
