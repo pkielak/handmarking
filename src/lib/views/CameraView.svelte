@@ -2,7 +2,7 @@
 	import { getContext, onMount } from 'svelte';
 	import * as ocr from 'esearch-ocr';
 	import * as ort from 'onnxruntime-web';
-	import { cacheModel } from '../utils';
+	import { loadModels } from '../workers';
 	import type { AppState } from '$lib/types/app';
 	import type { OcrInstance } from '$lib/types/ocr';
 
@@ -41,16 +41,22 @@
 			const recUrl = import.meta.env.VITE_REC_URL;
 			const detUrl = import.meta.env.VITE_DET_URL;
 
-			const dictContent = await (await cacheModel(dictUrl, 'dict'))?.text();
-			const rec = await (await cacheModel(recUrl, 'rec'))?.arrayBuffer();
-			const det = await (await cacheModel(detUrl, 'det'))?.arrayBuffer();
+			state.showPlaybackInfo = true;
+			state.playbackInfo = 'Loading OCR models...';
 
-			if (dictContent && rec && det) {
+			// Load models using the worker
+			const models = await loadModels({
+				det: detUrl,
+				rec: recUrl,
+				dict: dictUrl
+			});
+
+			if (models.det && models.rec && models.dict) {
 				state.ocrInstance = (await ocr.init({
-					det: { input: det },
+					det: { input: models.det },
 					rec: {
-						input: rec,
-						decodeDic: dictContent,
+						input: models.rec,
+						decodeDic: models.dict,
 						optimize: {
 							space: false
 						}
@@ -58,10 +64,14 @@
 					ort
 				})) as OcrInstance;
 			}
+
+			// Hide playback info after models are loaded
+			state.showPlaybackInfo = false;
 		} catch (err) {
 			console.error('Error loading OCR model:', err);
 			const errorMessage = err instanceof Error ? err.message : String(err);
 			state.resultPlaceholder = 'Error loading OCR model: ' + errorMessage;
+			state.showPlaybackInfo = false;
 			return;
 		}
 
