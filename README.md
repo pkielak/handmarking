@@ -81,3 +81,7 @@ const ocrInstance = await ocr.init({
 ```
 
 For more details, see the [worker documentation](src/lib/workers/README.md).
+
+## Built With
+
+This project is built with [SvelteKit](https://kit.svelte.dev/), a modern web framework for building fast, production-ready applications.
