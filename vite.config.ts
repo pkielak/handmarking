@@ -5,6 +5,7 @@ import { playwright } from '@vitest/browser-playwright';
 import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
+	base: process.env.VITE_BASE_PATH || '/handmarking',
 	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
 
 	test: {

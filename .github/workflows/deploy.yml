@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: ['main']
   workflow_dispatch:
 
 permissions:
@@ -22,8 +22,8 @@ jobs:
       - name: Setup Node.js (if using npm/yarn/pnpm)
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
@@ -37,13 +37,13 @@ jobs:
           VITE_DET_URL: ${{ secrets.VITE_DET_URL }}
           VITE_REC_URL: ${{ secrets.VITE_REC_URL }}
           VITE_DICT_URL: ${{ secrets.VITE_DICT_URL }}
-          VITE_BASE_PATH: "/handmarking/"
+          VITE_BASE_PATH: '/handmarking'
         run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: "./dist"
+          path: './dist'
 
   deploy:
     environment:
