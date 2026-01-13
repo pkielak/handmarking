@@ -31,14 +31,14 @@
 	}
 </script>
 
-<Page id="image-process" class="flex flex-col">
-	<Navbar title="Handmarking" subtitle="Process">
+<Page id="image-process">
+	<Navbar title="Handmarking" subtitle="Process" class="opacity-75">
 		{#snippet left()}
 			<NavbarBackLink text="Back" onClick={() => goto(resolve('/'))} />
 		{/snippet}
 	</Navbar>
 
-	<div class="relative flex h-full w-full grow items-center justify-center">
+	<div class="absolute top-0 left-0 flex h-svh w-svw items-center justify-center">
 		{#if !!state.imagePreviewSrc}
 			<img
 				id="image-preview"

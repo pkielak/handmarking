@@ -35,24 +35,31 @@
 	}
 </script>
 
-<Page id="result-page">
+<Page id="result-page" class="align-center flex max-h-screen min-h-screen flex-col overflow-y-auto">
 	<Navbar title="Handmarking" subtitle="Result">
 		{#snippet left()}
 			<NavbarBackLink text="Back" onClick={() => goto(resolve('/process' as '/'))} />
 		{/snippet}
 	</Navbar>
 
-	<textarea
-		id="result"
-		class="result"
-		rows="5"
-		bind:value={state.resultText}
-		placeholder="Your text from handwritten note will appear here."
-		disabled={!state.resultText}
-	></textarea>
-	<footer>
-		<button id="save" class="save" on:click={save} disabled={!state.resultText}>
-			💾 Save to MD
+	<div class="flex h-full w-full flex-1 flex-col px-4 pb-8">
+		<div class="my-8 grid h-full">
+			<textarea
+				id="result"
+				bind:value={state.resultText}
+				class="resize-none"
+				placeholder="Your text from handwritten note will appear here."
+				disabled={!state.resultText}
+			></textarea>
+		</div>
+
+		<button
+			id="infer"
+			class="mx-auto mb-7 w-auto rounded-lg bg-indigo-600 px-6 py-2.5"
+			on:click={save}
+			disabled={!state.resultText}
+		>
+			Save file
 		</button>
-	</footer>
+	</div>
 </Page>
