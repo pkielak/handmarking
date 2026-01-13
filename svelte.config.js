@@ -9,7 +9,8 @@ const config = {
 			fallback: '404.html'
 		}),
 		paths: {
-			base: process.env.VITE_BASE_PATH || '/handmarking'
+			base: process.env.VITE_BASE_PATH || '/handmarking',
+			relative: false // Key fix for static adapters!
 		}
 	}
 };

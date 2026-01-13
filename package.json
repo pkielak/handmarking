@@ -20,6 +20,7 @@
 	"dependencies": {
 		"@sveltejs/adapter-static": "^3.0.10",
 		"esearch-ocr": "^8.5.0",
+		"konsta": "^5.0.6",
 		"onnxruntime-web": "^1.17.3"
 	},
 	"devDependencies": {
@@ -27,8 +28,6 @@
 		"@eslint/js": "^9.39.1",
 		"@sveltejs/kit": "^2.49.1",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
-		"@tailwindcss/forms": "^0.5.10",
-		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.1.17",
 		"@types/node": "^22",
 		"@vitest/browser-playwright": "^4.0.15",

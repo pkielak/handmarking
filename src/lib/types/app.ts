@@ -1,17 +1,10 @@
 import type { CanvasImageData, OcrInstance } from '$lib/types/ocr';
 
 export type AppState = {
-	resultText: string;
-	playbackInfo: string;
-	showPlaybackInfo: boolean;
-	capturedImageData: CanvasImageData | null;
+	isLoading: boolean;
+	errorText: string;
 	ocrInstance: OcrInstance | null;
-	captureDisabled: boolean;
-	inferDisabled: boolean;
-	resultDisabled: boolean;
-	saveDisabled: boolean;
-	previewSrc: string;
+	capturedImageData: CanvasImageData | null;
 	imagePreviewSrc: string;
-	showImagePreviewPlaceholder: boolean;
-	resultPlaceholder: string;
+	resultText: string;
 };
