@@ -7,4 +7,6 @@ export type AppState = {
 	capturedImageData: CanvasImageData | null;
 	imagePreviewSrc: string;
 	resultText: string;
+	cameraStream: MediaStream | null;
+	initializationComplete: boolean;
 };

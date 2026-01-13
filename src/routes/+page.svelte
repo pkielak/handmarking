@@ -1,10 +1,6 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
-	import * as ocr from 'esearch-ocr';
-	import * as ort from 'onnxruntime-web';
-	import { loadModels } from '$lib/workers';
 	import type { AppState } from '$lib/types/app';
-	import type { OcrInstance } from '$lib/types/ocr';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { Page } from 'konsta/svelte';
@@ -15,57 +11,33 @@
 
 	const state = getContext<AppState>('state');
 
-	onMount(async () => {
+	onMount(() => {
 		ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+	});
 
-		// camera initialization
-		try {
-			const stream = await navigator.mediaDevices.getUserMedia({
-				video: { facingMode: 'environment' }
-			});
-			video.srcObject = stream;
-			state.isLoading = false;
-			await video.play();
-		} catch (e) {
-			console.error('Camera error:', e);
-			state.errorText = 'Error accessing camera, please check camera permissions.';
+	// Use effect to react to camera stream becoming available
+	$effect(() => {
+		if (!state.initializationComplete) {
 			return;
 		}
 
-		try {
-			ort.env.wasm.wasmPaths = 'https://unpkg.com/onnxruntime-web@dev/dist/';
+		if (!state.cameraStream) {
+			return;
+		}
 
-			// Get environment variables with fallback to default URLs
-			const dictUrl = import.meta.env.VITE_DICT_URL;
-			const recUrl = import.meta.env.VITE_REC_URL;
-			const detUrl = import.meta.env.VITE_DET_URL;
+		// Use the camera stream from global state
+		video.srcObject = state.cameraStream;
 
-			// Load models using the worker
-			const models = await loadModels({
-				det: detUrl,
-				rec: recUrl,
-				dict: dictUrl
-			});
-
-			if (models.det && models.rec && models.dict) {
-				state.ocrInstance = (await ocr.init({
-					det: { input: models.det },
-					rec: {
-						input: models.rec,
-						decodeDic: models.dict,
-						optimize: {
-							space: false
-						}
-					},
-					ort
-				})) as OcrInstance;
+		// Wrap video playback in async IIFE
+		void (async () => {
+			try {
+				await video.play();
+			} catch (e) {
+				console.error('Error playing video:', e);
+				state.errorText =
+					'Error playing camera stream: ' + (e instanceof Error ? e.message : String(e));
 			}
-		} catch (err) {
-			console.error('Error loading OCR model:', err);
-			const errorMessage = err instanceof Error ? err.message : String(err);
-			state.errorText = 'Error loading OCR model: ' + errorMessage;
-			return;
-		}
+		})();
 	});
 
 	function capture(): void {
