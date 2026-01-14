@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { App, Button, Preloader, Toast } from 'konsta/svelte';
+	import { App, Notification, Preloader } from 'konsta/svelte';
 	import { onMount, setContext } from 'svelte';
 	import './layout.css';
 	import type { AppState } from '$lib/types/app';
@@ -12,7 +12,7 @@
 	let dark = $state(false);
 
 	// Create shared global state
-	let globalState = $state<AppState>({
+	let appState = $state<AppState>({
 		isLoading: true,
 		errorText: '',
 		ocrInstance: null,
@@ -24,7 +24,7 @@
 	});
 
 	// Set the global state in context so all pages can access it
-	setContext<AppState>('state', globalState);
+	setContext<AppState>('state', appState);
 
 	function toggleDark(isDark: boolean) {
 		if (isDark) {
@@ -44,12 +44,12 @@
 
 			// Store references to the stream
 			cameraStream = stream;
-			globalState.cameraStream = stream;
+			appState.cameraStream = stream;
 
 			return true;
 		} catch (e) {
 			console.error('Camera error:', e);
-			globalState.errorText = 'Error accessing camera, please check camera permissions.';
+			appState.errorText = 'Error accessing camera, please check camera permissions.';
 			return false;
 		}
 	}
@@ -61,7 +61,7 @@
 				track.stop();
 			});
 			cameraStream = null;
-			globalState.cameraStream = null;
+			appState.cameraStream = null;
 		}
 	}
 
@@ -82,7 +82,7 @@
 			});
 
 			if (models.det && models.rec && models.dict) {
-				globalState.ocrInstance = (await ocr.init({
+				appState.ocrInstance = (await ocr.init({
 					det: { input: models.det },
 					rec: {
 						input: models.rec,
@@ -98,7 +98,7 @@
 		} catch (err) {
 			console.error('Error loading OCR model:', err);
 			const errorMessage = err instanceof Error ? err.message : String(err);
-			globalState.errorText = 'Error loading OCR model: ' + errorMessage;
+			appState.errorText = 'Error loading OCR model: ' + errorMessage;
 		}
 		return false;
 	}
@@ -111,21 +111,15 @@
 			initializeModels()
 		]);
 
-		console.log('Camera initialization result:', cameraSuccess);
-		console.log('Model initialization result:', modelSuccess);
-		console.log('Global state camera stream after init:', !!globalState.cameraStream);
-
 		if (!cameraSuccess || !modelSuccess) {
 			console.error('App initialization failed');
 			return false;
 		}
 
-		console.log('App initialization completed successfully');
 		return true;
 	}
 
 	onMount(() => {
-		console.log('Layout component onMount called');
 		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 		dark = document.documentElement.classList.contains('dark') || mediaQuery.matches;
 
@@ -144,8 +138,8 @@
 			const success = await initializeApp();
 
 			if (success) {
-				globalState.isLoading = false;
-				globalState.initializationComplete = true;
+				appState.isLoading = false;
+				appState.initializationComplete = true;
 			}
 		})();
 
@@ -160,14 +154,16 @@
 <svelte:head></svelte:head>
 
 <App theme="material" {dark}>
-	{#if globalState.isLoading}
-		<Preloader class="absolute top-1/2 left-1/2 z-10 h-16 w-16 -translate-1/2" />
+	{#if appState.isLoading}
+		<Preloader class="fixed top-1/2 left-1/2 z-50 h-16 w-16 -translate-1/2" />
 	{/if}
-	<Toast position="center" opened={!!globalState.errorText}>
-		{#snippet button()}
-			<Button clear inline small rounded onClick={() => (globalState.errorText = '')}>Close</Button>
-		{/snippet}
-		<div class="shrink">{globalState.errorText}</div>
-	</Toast>
+	<Notification
+		title="Error"
+		opened={!!appState.errorText}
+		text={appState.errorText}
+		onClose={() => (appState.errorText = '')}
+		button="x"
+	></Notification>
+
 	{@render children()}
 </App>

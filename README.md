@@ -67,16 +67,16 @@ import modelLoader from '$lib/workers/model-loader';
 
 // Load all OCR models
 const models = await modelLoader.loadModels({
-    det: import.meta.env.VITE_DET_URL,
-    rec: import.meta.env.VITE_REC_URL,
-    dict: import.meta.env.VITE_DICT_URL
+	det: import.meta.env.VITE_DET_URL,
+	rec: import.meta.env.VITE_REC_URL,
+	dict: import.meta.env.VITE_DICT_URL
 });
 
 // Initialize OCR with loaded models
 const ocrInstance = await ocr.init({
-    det: { input: models.det },
-    rec: { input: models.rec, decodeDic: models.dict },
-    ort
+	det: { input: models.det },
+	rec: { input: models.rec, decodeDic: models.dict },
+	ort
 });
 ```
 

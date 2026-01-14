@@ -9,7 +9,7 @@
 	let canvas: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D;
 
-	const state = getContext<AppState>('state');
+	const appState = getContext<AppState>('state');
 
 	onMount(() => {
 		ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -17,16 +17,16 @@
 
 	// Use effect to react to camera stream becoming available
 	$effect(() => {
-		if (!state.initializationComplete) {
+		if (!appState.initializationComplete) {
 			return;
 		}
 
-		if (!state.cameraStream) {
+		if (!appState.cameraStream) {
 			return;
 		}
 
 		// Use the camera stream from global state
-		video.srcObject = state.cameraStream;
+		video.srcObject = appState.cameraStream;
 
 		// Wrap video playback in async IIFE
 		void (async () => {
@@ -34,7 +34,7 @@
 				await video.play();
 			} catch (e) {
 				console.error('Error playing video:', e);
-				state.errorText =
+				appState.errorText =
 					'Error playing camera stream: ' + (e instanceof Error ? e.message : String(e));
 			}
 		})();
@@ -42,18 +42,22 @@
 
 	function capture(): void {
 		if (video.videoWidth === 0 || video.videoHeight === 0) {
-			state.errorText = 'Camera not ready yet, try again.';
+			appState.errorText = 'Camera not ready yet, try again.';
 			return;
 		}
 		canvas.width = video.videoWidth;
 		canvas.height = video.videoHeight;
 		ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-		state.capturedImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-		state.resultText = '';
+		appState.capturedImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		appState.resultText = '';
 
 		// Update preview images with captured frame
 		const imageDataUrl = canvas.toDataURL('image/png');
-		state.imagePreviewSrc = imageDataUrl;
+		appState.imagePreviewSrc = imageDataUrl;
+	}
+
+	function process(): void {
+		goto(resolve('/process'));
 	}
 </script>
 
@@ -63,21 +67,23 @@
 	<button
 		id="capture"
 		class="absolute bottom-15 left-1/2 h-15 w-15 -translate-x-1/2 rounded-full bg-red-600"
-		on:click={capture}
-		disabled={state.isLoading}
+		onclick={capture}
+		disabled={appState.isLoading}
 		aria-label="capture button"
 	></button>
-	<button
-		class="absolute right-15 bottom-15 h-15 w-15 rounded-full border border-gray-400"
-		on:click={() => goto(resolve('/process' as '/'))}
-		aria-label="Go to image processing"
-	>
-		<img
-			id="preview"
-			class="h-full w-full rounded-full object-cover object-center"
-			src={state.imagePreviewSrc || 'icons/small.png'}
-			alt="Preview of camera capture"
-		/>
-	</button>
+	{#if appState.imagePreviewSrc}
+		<button
+			class="absolute right-15 bottom-15 h-15 w-15 rounded-full border border-gray-400"
+			onclick={process}
+			aria-label="Go to image processing"
+		>
+			<img
+				id="preview"
+				class="h-full w-full rounded-full object-cover object-center"
+				src={appState.imagePreviewSrc}
+				alt="Preview of camera capture"
+			/>
+		</button>
+	{/if}
 	<canvas bind:this={canvas} style="display: none"></canvas>
 </Page>
