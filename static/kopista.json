@@ -1,8 +1,8 @@
 {
-  "name": "Handmarking",
-  "short_name": "HM",
+  "name": "Kopista",
+  "short_name": "Kopista",
   "description": "Handwriting to markdown converter",
-  "start_url": "/handmarking/",
+  "start_url": "/kopista/",
   "background_color": "#000000",
   "display": "standalone",
   "icons": [
@@ -22,5 +22,5 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#000000"
+  "theme_color": "#4f39f6"
 }

@@ -37,7 +37,7 @@ jobs:
           VITE_DET_URL: ${{ secrets.VITE_DET_URL }}
           VITE_REC_URL: ${{ secrets.VITE_REC_URL }}
           VITE_DICT_URL: ${{ secrets.VITE_DICT_URL }}
-          VITE_BASE_PATH: '/handmarking'
+          VITE_BASE_PATH: '/kopista'
         run: npm run build
 
       - name: Upload artifact

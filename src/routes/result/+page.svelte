@@ -19,7 +19,7 @@
 			a.href = url;
 			// Generate filename with format YYYY_MM_DD_HHMMSS using a single replace invocation
 			const now = new Date();
-			filename = `handmarking_${now
+			filename = `kopista_${now
 				.toISOString()
 				.replace(/[-:T.]/g, '')
 				.slice(0, 14)}.md`;

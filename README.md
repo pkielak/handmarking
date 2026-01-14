@@ -1,4 +1,4 @@
-# Handmarking
+# Kopista
 
 Handwriting to markdown converter
 
