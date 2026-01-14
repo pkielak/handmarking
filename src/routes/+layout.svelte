@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { App, Notification, Preloader } from 'konsta/svelte';
+	import { App, Notification } from 'konsta/svelte';
 	import { onMount, setContext } from 'svelte';
 	import './layout.css';
 	import type { AppState } from '$lib/types/app';
@@ -155,7 +155,13 @@
 
 <App theme="material" {dark}>
 	{#if appState.isLoading}
-		<Preloader class="fixed top-1/2 left-1/2 z-50 h-16 w-16 -translate-1/2" />
+		<div
+			class="fixed inset-0 z-10 flex items-center justify-center bg-white/20 dark:bg-gray-900/20"
+		>
+			<div
+				class="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"
+			></div>
+		</div>
 	{/if}
 	<Notification
 		title="Error"

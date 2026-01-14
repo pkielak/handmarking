@@ -66,14 +66,14 @@
 	></video>
 	<button
 		id="capture"
-		class="absolute bottom-15 left-1/2 h-15 w-15 -translate-x-1/2 rounded-full bg-red-600"
+		class="absolute bottom-12 left-1/2 h-12 w-12 -translate-x-1/2 rounded-full bg-red-600"
 		onclick={capture}
 		disabled={appState.isLoading}
 		aria-label="capture button"
 	></button>
 	{#if appState.imagePreviewSrc}
 		<button
-			class="absolute right-15 bottom-15 h-15 w-15 rounded-full border border-gray-400"
+			class="absolute right-8 bottom-12 h-12 w-12 rounded-full border border-gray-400"
 			onclick={process}
 			aria-label="Go to image processing"
 		>

@@ -35,7 +35,7 @@
 </script>
 
 <Page id="image-process">
-	<Navbar title="Process" class="opacity-75">
+	<Navbar title="Process" class="z-20 opacity-75">
 		{#snippet left()}
 			<NavbarBackLink text="Back" onClick={() => goto(resolve('/'))} />
 		{/snippet}
@@ -65,7 +65,7 @@
 		{#if appState.capturedImageData && appState.ocrInstance}
 			<button
 				id="infer"
-				class="absolute bottom-15 left-1/2 -translate-x-1/2 rounded-lg bg-indigo-600 px-4 py-2"
+				class="absolute bottom-12 left-1/2 -translate-x-1/2 rounded-lg bg-indigo-600 px-4 py-2"
 				onclick={infer}
 			>
 				Process Image
@@ -73,7 +73,9 @@
 		{/if}
 	</div>
 	<Dialog opened={dialogOpened} onBackdropClick={() => (dialogOpened = false)}>
-		No text detected. Try again or take another picture.
+		<p>No text detected.</p>
+		<br />
+		<p>Try again or take another picture.</p>
 		{#snippet buttons()}
 			<DialogButton strong onclick={() => (dialogOpened = false)}>Ok</DialogButton>
 		{/snippet}

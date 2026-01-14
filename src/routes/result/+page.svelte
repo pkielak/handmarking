@@ -47,13 +47,13 @@
 </script>
 
 <Page id="result-page" class="align-center flex max-h-screen min-h-screen flex-col overflow-y-auto">
-	<Navbar title="Result">
+	<Navbar title="Result" class="z-20">
 		{#snippet left()}
 			<NavbarBackLink text="Back" onClick={() => goto(resolve('/process' as '/'))} />
 		{/snippet}
 	</Navbar>
 
-	<div class="flex h-full w-full flex-1 flex-col px-4 pb-8">
+	<div class="flex h-full w-full flex-1 flex-col px-4 pb-7">
 		<div class="my-8 grid h-full">
 			<textarea
 				id="result"
@@ -66,7 +66,7 @@
 		{#if appState.resultText && appState.imagePreviewSrc}
 			<button
 				id="infer"
-				class="mx-auto mb-7 w-auto rounded-lg bg-indigo-600 px-6 py-2.5"
+				class="mx-auto mb-6 w-auto rounded-lg bg-indigo-600 px-6 py-2.5"
 				onclick={save}
 			>
 				Save file
@@ -74,7 +74,9 @@
 		{/if}
 	</div>
 	<Dialog opened={dialogOpened} onBackdropClick={() => (dialogOpened = false)}>
-		Text saved as {filename} Would you create another one or edit existing?
+		<p>Text saved as {filename}</p>
+		<br />
+		<p>Would you create another one or edit existing?</p>
 		{#snippet buttons()}
 			<DialogButton onclick={() => (dialogOpened = false)}>Edit</DialogButton>
 			<DialogButton strong onclick={resetAndNew}>New</DialogButton>
