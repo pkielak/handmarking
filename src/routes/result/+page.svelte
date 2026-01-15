@@ -12,17 +12,58 @@
 
 	async function save(): Promise<void> {
 		try {
-			// Create a Blob with markdown MIME type
-			const blob = new Blob([appState.resultText], { type: 'text/markdown' });
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
 			// Generate filename with format YYYY_MM_DD_HHMMSS using a single replace invocation
 			const now = new Date();
+
+			// Get settings to determine file type
+			const savedSettings = localStorage.getItem('kopistaSettings');
+			const fileExtension = savedSettings ? JSON.parse(savedSettings).fileType : 'md';
+
 			filename = `kopista_${now
 				.toISOString()
 				.replace(/[-:T.]/g, '')
-				.slice(0, 14)}.md`;
+				.slice(0, 14)}.${fileExtension}`;
+
+			// Create a Blob with appropriate MIME type
+			const mimeType = fileExtension === 'md' ? 'text/markdown' : 'text/plain';
+			const blob = new Blob([appState.resultText], { type: mimeType });
+
+			// Try to use the saved directory from settings
+			if (savedSettings) {
+				const settings = JSON.parse(savedSettings);
+				const saveDirectory = settings.saveDirectory;
+
+				if (saveDirectory && saveDirectory.trim() !== '') {
+					try {
+						// Try to use the File System Access API to save directly to the directory
+						const directoryHandle = await window.showDirectoryPicker({
+							mode: 'readwrite'
+						});
+
+						// Create or get file handle
+						const fileHandle = await directoryHandle.getFileHandle(filename, { create: true });
+
+						// Write the file
+						const writable = await fileHandle.createWritable();
+						await writable.write(blob);
+						await writable.close();
+
+						dialogOpened = true;
+						return;
+					} catch (err) {
+						console.error('File System Access API error:', err);
+						// Fall back to traditional download method
+						if (err.name !== 'AbortError') {
+							console.warn('Falling back to traditional download method');
+						}
+					}
+				}
+			}
+
+			// Fallback: Use traditional download method
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
 			a.download = filename;
 			document.body.appendChild(a);
 			a.click();

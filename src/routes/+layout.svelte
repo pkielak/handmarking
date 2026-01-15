@@ -7,9 +7,11 @@
 	import * as ort from 'onnxruntime-web';
 	import { loadModels } from '$lib/workers';
 	import type { OcrInstance } from '$lib/types/ocr';
+	import Settings from '$lib/components/Settings.svelte';
 
 	let { children } = $props();
 	let dark = $state(false);
+	let showSettings = $state(false);
 
 	// Create shared global state
 	let appState = $state<AppState>({
@@ -132,6 +134,12 @@
 
 		mediaQuery.addEventListener('change', handleChange);
 
+		// Check if settings exist in localStorage
+		const settingsExist = localStorage.getItem('kopistaSettings') !== null;
+		if (!settingsExist) {
+			showSettings = true;
+		}
+
 		// Wrap async code in IIFE
 		void (async () => {
 			// Initialize camera and models
@@ -163,6 +171,13 @@
 			></div>
 		</div>
 	{/if}
+
+	{#if showSettings}
+		<Settings onClose={() => (showSettings = false)} />
+	{:else}
+		{@render children()}
+	{/if}
+
 	<Notification
 		title="Error"
 		opened={!!appState.errorText}
@@ -170,6 +185,4 @@
 		onClose={() => (appState.errorText = '')}
 		button="x"
 	></Notification>
-
-	{@render children()}
 </App>
