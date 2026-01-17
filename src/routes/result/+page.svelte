@@ -4,6 +4,7 @@
 	import { getContext } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { generateFilename, saveFile } from '$lib/utils/fileUtils';
 
 	// Access state from context
 	let appState = getContext<AppState>('state');
@@ -12,66 +13,25 @@
 
 	async function save(): Promise<void> {
 		try {
-			// Generate filename with format YYYY_MM_DD_HHMMSS using a single replace invocation
-			const now = new Date();
-
 			// Get settings to determine file type
 			const savedSettings = localStorage.getItem('kopistaSettings');
 			const fileExtension = savedSettings ? JSON.parse(savedSettings).fileType : 'md';
 
-			filename = `kopista_${now
-				.toISOString()
-				.replace(/[-:T.]/g, '')
-				.slice(0, 14)}.${fileExtension}`;
+			// Generate filename
+			filename = generateFilename(fileExtension);
 
-			// Create a Blob with appropriate MIME type
-			const mimeType = fileExtension === 'md' ? 'text/markdown' : 'text/plain';
-			const blob = new Blob([appState.resultText], { type: mimeType });
+			// Save the file
+			const result = await saveFile({
+				content: appState.resultText,
+				filename,
+				fileExtension
+			});
 
-			// Try to use the saved directory from settings
-			if (savedSettings) {
-				const settings = JSON.parse(savedSettings);
-				const saveDirectory = settings.saveDirectory;
-
-				if (saveDirectory && saveDirectory.trim() !== '') {
-					try {
-						// Try to use the File System Access API to save directly to the directory
-						const directoryHandle = await window.showDirectoryPicker({
-							mode: 'readwrite'
-						});
-
-						// Create or get file handle
-						const fileHandle = await directoryHandle.getFileHandle(filename, { create: true });
-
-						// Write the file
-						const writable = await fileHandle.createWritable();
-						await writable.write(blob);
-						await writable.close();
-
-						dialogOpened = true;
-						return;
-					} catch (err) {
-						console.error('File System Access API error:', err);
-						// Fall back to traditional download method
-						if (err.name !== 'AbortError') {
-							console.warn('Falling back to traditional download method');
-						}
-					}
-				}
+			if (result.success) {
+				dialogOpened = true;
+			} else {
+				appState.errorText = 'Failed to save file.';
 			}
-
-			// Fallback: Use traditional download method
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = filename;
-			document.body.appendChild(a);
-			a.click();
-			setTimeout(() => {
-				document.body.removeChild(a);
-				URL.revokeObjectURL(url);
-			}, 1000);
-			dialogOpened = true;
 		} catch (error) {
 			console.error('Save error:', error);
 			appState.errorText = 'Failed to save file.';

@@ -7,7 +7,7 @@
 	import * as ort from 'onnxruntime-web';
 	import { loadModels } from '$lib/workers';
 	import type { OcrInstance } from '$lib/types/ocr';
-	import Settings from '$lib/components/Settings.svelte';
+	import TitleScreen from '$lib/components/TitleScreen.svelte';
 
 	let { children } = $props();
 	let dark = $state(false);
@@ -108,13 +108,19 @@
 	async function initializeApp() {
 		console.log('Starting app initialization...');
 		// Initialize camera and models in parallel
-		const [cameraSuccess, modelSuccess] = await Promise.all([
-			initializeCamera(),
-			initializeModels()
-		]);
+		const cameraPromise = initializeCamera();
+		const modelPromise = initializeModels();
 
-		if (!cameraSuccess || !modelSuccess) {
-			console.error('App initialization failed');
+		// Wait for both initializations to complete
+		const [cameraSuccess, modelSuccess] = await Promise.all([cameraPromise, modelPromise]);
+
+		if (!cameraSuccess) {
+			console.error('App initialization failed - camera required');
+			return false;
+		}
+
+		if (!modelSuccess) {
+			console.error('App initialization failed - OCR models required');
 			return false;
 		}
 
@@ -173,7 +179,7 @@
 	{/if}
 
 	{#if showSettings}
-		<Settings onClose={() => (showSettings = false)} />
+		<TitleScreen onClose={() => (showSettings = false)} />
 	{:else}
 		{@render children()}
 	{/if}

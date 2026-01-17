@@ -41,7 +41,8 @@ declare module 'esearch-ocr' {
 		box: number[][];
 		style: { bg: number[]; text: number[] };
 	};
-export type BoxType = number[][]; // Coordinates: [[x1,y1],[x2,y2],...]
+
+	export type BoxType = number[][]; // Coordinates: [[x1,y1],[x2,y2],...]
 
 	export function init(options: InitOptions): Promise<OcrInstance>;
 
@@ -60,4 +61,11 @@ export type BoxType = number[][]; // Coordinates: [[x1,y1],[x2,y2],...]
 
 	const defaultExport: OcrInstance;
 	export default defaultExport;
+}
+
+declare global {
+	interface Window {
+		showSaveFilePicker?: (options?: unknown) => Promise<FileSystemFileHandle>;
+		showDirectoryPicker?: (options?: unknown) => Promise<FileSystemDirectoryHandle>;
+	}
 }
