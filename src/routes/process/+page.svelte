@@ -1,9 +1,10 @@
 <script lang="ts">
 	import type { AppState } from '$lib/types/app';
-	import { Dialog, DialogButton, Navbar, NavbarBackLink, Page } from 'konsta/svelte';
+	import { Dialog, DialogButton, Page } from 'konsta/svelte';
 	import { getContext } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import Navbar from '$lib/components/Navbar.svelte';
 
 	// Access state from context
 	let appState = getContext<AppState>('state');
@@ -35,11 +36,7 @@
 </script>
 
 <Page id="image-process">
-	<Navbar title="Process" class="z-20 opacity-75">
-		{#snippet left()}
-			<NavbarBackLink text="Back" onClick={() => goto(resolve('/'))} />
-		{/snippet}
-	</Navbar>
+	<Navbar title="Process" backLink="/" />
 
 	<div class="absolute top-0 left-0 flex h-svh w-svw items-center justify-center">
 		{#if !!appState.imagePreviewSrc}

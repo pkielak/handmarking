@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { Page } from 'konsta/svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 
 	let video: HTMLVideoElement;
 	let canvas: HTMLCanvasElement;
@@ -62,6 +63,7 @@
 </script>
 
 <Page id="camera-wrapper">
+	<Navbar transparent={true} title="" showSettings={true} />
 	<video class="h-full w-full" bind:this={video} width="480" height="640" autoplay muted playsinline
 	></video>
 	<button

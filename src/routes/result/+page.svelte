@@ -1,10 +1,11 @@
 <script lang="ts">
 	import type { AppState } from '$lib/types/app';
-	import { Dialog, DialogButton, Navbar, NavbarBackLink, Page } from 'konsta/svelte';
+	import { Dialog, DialogButton, Page } from 'konsta/svelte';
 	import { getContext } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { generateFilename, saveFile } from '$lib/utils/fileUtils';
+	import Navbar from '$lib/components/Navbar.svelte';
 
 	// Access state from context
 	let appState = getContext<AppState>('state');
@@ -48,11 +49,7 @@
 </script>
 
 <Page id="result-page" class="align-center flex max-h-screen min-h-screen flex-col overflow-y-auto">
-	<Navbar title="Result" class="z-20">
-		{#snippet left()}
-			<NavbarBackLink text="Back" onClick={() => goto(resolve('/process' as '/'))} />
-		{/snippet}
-	</Navbar>
+	<Navbar title="Result" backLink="/process" />
 
 	<div class="flex h-full w-full flex-1 flex-col px-4 pb-7">
 		<div class="my-8 grid h-full">
