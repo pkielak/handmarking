@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { Page } from 'konsta/svelte';
+	import { BlockTitle, List, Page } from 'konsta/svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
-	import { afterNavigate } from '$app/navigation';
+	import SettingsForm from '$lib/components/SettingsForm.svelte';
+	import { afterNavigate, goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	let previousUrl = '/';
 
@@ -14,12 +16,17 @@
 			console.log(basePath, previousUrl);
 		}
 	});
+
+	function handleSettingsSave() {
+		// Navigate back after saving
+		goto(resolve(previousUrl as '/'));
+	}
 </script>
 
 <Page id="settings-page">
 	<Navbar title="Settings" showSettings={false} backLink={previousUrl} />
-	<div class="p-4">
-		<h1 class="mb-6 text-2xl font-bold">Settings</h1>
-		<p>Settings page content will be added here.</p>
-	</div>
+	<BlockTitle class="mb-2">File</BlockTitle>
+	<List inset strong class="p-4">
+		<SettingsForm onSave={handleSettingsSave} />
+	</List>
 </Page>

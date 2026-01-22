@@ -63,7 +63,7 @@
 </script>
 
 <Page id="camera-wrapper">
-	<Navbar transparent={true} title="" showSettings={true} />
+	<Navbar transparent={true} title="" showSettings={true} absolute={true} />
 	<video class="h-full w-full" bind:this={video} width="480" height="640" autoplay muted playsinline
 	></video>
 	<button

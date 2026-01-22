@@ -8,12 +8,19 @@
 		showSettings?: boolean;
 		backLink?: string;
 		transparent?: boolean;
+		absolute?: boolean;
 	}
 
-	let { title, showSettings = true, backLink, transparent = false }: NavbarProps = $props();
+	let {
+		title,
+		showSettings = true,
+		backLink,
+		transparent = false,
+		absolute = false
+	}: NavbarProps = $props();
 </script>
 
-<KonstaNavbar {title} class="absolute z-20" {transparent}>
+<KonstaNavbar {title} class={`z-20 ${absolute ? 'absolute ' : ''}`} {transparent}>
 	{#snippet left()}
 		{#if backLink}
 			<NavbarBackLink text="Back" onClick={() => goto(resolve(backLink as '/'))} />
