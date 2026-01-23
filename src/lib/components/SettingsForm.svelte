@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ListInput } from 'konsta/svelte';
+	import { ListInput, Popover } from 'konsta/svelte';
 	import type { AppState } from '$lib/types/app';
 	import { getContext } from 'svelte';
 
@@ -97,11 +97,14 @@
 	onMount(() => {
 		loadSettings();
 	});
+
+	let popoverOpened = $state(false);
+	let popoverTargetEl: HTMLButtonElement | null = $state(null);
 </script>
 
 <ListInput
 	class="-mx-4 mb-2 py-0"
-	inputClass="mx-0"
+	inputClass="mx-0 cursor-pointer"
 	label="File Type"
 	type="select"
 	dropdown
@@ -117,13 +120,13 @@
 </ListInput>
 
 <button
-	class="relative flex min-h-14 w-full cursor-pointer flex-col items-start justify-center rounded-t bg-md-light-surface-variant px-4 text-md-light-on-surface dark:bg-md-dark-surface-variant dark:text-md-dark-on-surface"
+	class={`relative flex min-h-14 w-full flex-col items-start justify-center rounded-t bg-md-light-surface-variant px-4 text-md-light-on-surface dark:bg-md-dark-surface-variant dark:text-md-dark-on-surface ${!window?.showDirectoryPicker ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
 	placeholder=""
 	value={settings.saveDirectory}
 	onchange={(e) => {
 		handleDirectoryChange(null, (e.target as HTMLInputElement).value);
 	}}
-	onclick={async () => {
+	onclick={async (e) => {
 		try {
 			if (window?.showDirectoryPicker) {
 				const directoryHandle = await window.showDirectoryPicker({
@@ -132,6 +135,10 @@
 
 				// Store the directory handle and name
 				handleDirectoryChange(directoryHandle, directoryHandle.name);
+			} else {
+				const buttonEl = e.target as HTMLButtonElement;
+				popoverTargetEl = buttonEl;
+				popoverOpened = true;
 			}
 		} catch (error) {
 			console.error('Directory selection cancelled or error:', error);
@@ -152,6 +159,15 @@
 		class="pointer-events-none absolute start-0 bottom-0 h-px w-full origin-bottom border-b border-md-light-on-surface dark:border-md-dark-on-surface"
 	></span>
 </button>
+<Popover
+	opened={popoverOpened}
+	target={popoverTargetEl}
+	onBackdropClick={() => (popoverOpened = false)}
+>
+	<div class="p-4 text-center text-sm text-gray-700 dark:text-gray-300">
+		This functionality is not available here.
+	</div>
+</Popover>
 
 <button
 	class="mt-4 w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-white"
