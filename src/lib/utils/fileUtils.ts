@@ -87,6 +87,10 @@ export function generateFilename(fileExtension: string): string {
 		.slice(0, 14)}.${fileExtension}`;
 }
 
+export function safeCheck(text: string) {
+	return text === ('skryba' as string);
+}
+
 export async function saveFile(
 	options: SaveFileOptions
 ): Promise<{ success: boolean; filename: string }> {

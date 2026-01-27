@@ -4,15 +4,22 @@
 	import { getContext } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { generateFilename, saveFile } from '$lib/utils/fileUtils';
+	import { generateFilename, safeCheck, saveFile } from '$lib/utils/fileUtils';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import ErrorDialog from '$lib/components/ErrorDialog.svelte';
 
 	// Access state from context
 	let appState = getContext<AppState>('state');
 	let dialogOpened = $state(false);
+	let errorDialog = $state(false);
 	let filename = $state('');
 
 	async function save(): Promise<void> {
+		if (safeCheck(appState.resultText)) {
+			errorDialog = true;
+			return;
+		}
+
 		try {
 			// Get settings to determine file type
 			const savedSettings = localStorage.getItem('kopistaSettings');
@@ -80,4 +87,6 @@
 			<DialogButton strong onclick={resetAndNew}>New</DialogButton>
 		{/snippet}
 	</Dialog>
+
+	<ErrorDialog opened={errorDialog} onClose={() => (errorDialog = false)} />
 </Page>

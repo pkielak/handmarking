@@ -21,7 +21,8 @@
 		"@sveltejs/adapter-static": "^3.0.10",
 		"esearch-ocr": "^8.5.0",
 		"konsta": "^5.0.6",
-		"onnxruntime-web": "^1.17.3"
+		"onnxruntime-web": "^1.17.3",
+		"svelte-confetti": "^2.3.2"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",
