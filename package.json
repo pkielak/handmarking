@@ -1,6 +1,6 @@
 {
 	"name": "kopista",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"description": "Handwriting to markdown converter",
 	"license": "MIT",
 	"private": true,

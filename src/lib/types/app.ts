@@ -9,4 +9,6 @@ export type AppState = {
 	resultText: string;
 	cameraStream: MediaStream | null;
 	initializationComplete: boolean;
+	modelsLoading: boolean;
+	modelsLoaded: boolean;
 };
