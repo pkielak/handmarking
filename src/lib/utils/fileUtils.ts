@@ -88,7 +88,7 @@ export function generateFilename(fileExtension: string): string {
 }
 
 export function safeCheck(text: string) {
-	return text === ('skryba' as string);
+	return text.toLowerCase() === ('skryba' as string);
 }
 
 export async function saveFile(
